@@ -2,7 +2,7 @@ import { createI18n } from 'vue-i18n'
 import { bitable } from '@lark-base-open/js-sdk'
 import en from './en.json'
 import zh from './zh.json'
-import jp from './jp.json'
+import ja from './ja.json'
 
 export const i18n = createI18n({
   locale: 'en',
@@ -10,7 +10,7 @@ export const i18n = createI18n({
   messages: {
     en,
     zh,
-    jp,
+    ja,
   },
 })
 

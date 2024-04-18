@@ -3,8 +3,8 @@
     "alert_message": "This extension allows you to obtain business registration information based on company name, registration number, or universal social credit code among other keywords, supporting Alibaba Cloud Market interface",
     "alert_link": "👉 Extension Usage Documentation",
     "submit": "Bulk Query",
-    "type_shulian": "Alibaba Cloud Market - Shulian",
-    "type_shumai": "Alibaba Cloud Market - Shumai"
+    "type_shulian": "Shulian",
+    "type_shumai": "Shumai"
   },
   "labels": {
     "field": "Company Name Field",
