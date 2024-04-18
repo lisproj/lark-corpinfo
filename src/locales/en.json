@@ -1,3 +1,52 @@
 {
-  "test": "Test"
+  "text": {
+    "alert_message": "This extension allows you to obtain business registration information based on company name, registration number, or universal social credit code among other keywords, supporting Alibaba Cloud Market interface",
+    "alert_link": "👉 Extension Usage Documentation",
+    "submit": "Bulk Query",
+    "type_shulian": "Alibaba Cloud Market - Shulian",
+    "type_shumai": "Alibaba Cloud Market - Shumai"
+  },
+  "labels": {
+    "field": "Company Name Field",
+    "apiurl": "API Request URL",
+    "appcode": "AppCode",
+    "help_appcode": "Please paste the AppCode as per the extension usage documentation",
+    "checkbox_group": {
+      "checkall": "Select All",
+      "capital": "Registered Capital",
+      "legalPerson": "Legal Representative",
+      "errorTips": "Error Tips",
+      "fetchTime": "Data Retrieval Time",
+      "companyCode": "Registration Number",
+      "creditNo": "Unified Social Credit Code",
+      "businessScope": "Business Scope",
+      "establishDate": "Registration Date",
+      "companyAddress": "Company Address",
+      "industry": "Industry",
+      "orgCode": "Organization Code",
+      "companyStatus": "Operating Status",
+      "companyType": "Company Type",
+      "issueDate": "Approval Date",
+      "operationStartdate": "Operational Start Date",
+      "operationEnddate": "Operational End Date",
+      "companyName": "Company Name",
+      "authority": "Registration Authority"
+    },
+    "service_type": "API Service Provider"
+  },
+  "placeholder": {
+    "field": "Please select the field where the company name is located",
+    "apiurl": "No change needed under normal circumstances",
+    "appcode": "Please paste the AppCode here"
+  },
+  "messages": {
+    "error": {
+      "fetch_error": "Request failed, please check if it's a network issue",
+      "set_error": "Error occurred during output",
+      "has_error": "An error was encountered, skip is currently in progress"
+    },
+    "success": {
+      "finished": "Operation is complete, please check the base"
+    }
+  }
 }

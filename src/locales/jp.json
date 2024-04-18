@@ -1,3 +1,52 @@
 {
-  "test": "テスト"
+  "text": {
+    "alert_message": "このプラグインを使用すると、企業名、登録番号、統一社会信用コードなどのキーワードに基づき、関連する企業の商業登録情報を取得でき、アリババクラウド市場インターフェースをサポートしています",
+    "alert_link": "👉 プラグイン使用説明書",
+    "submit": "一括照会",
+    "type_shulian": "アリババクラウド市場 - 数链",
+    "type_shumai": "アリババクラウド市場 - 数脈"
+  },
+  "labels": {
+    "field": "企業名フィールド",
+    "apiurl": "APIリクエストURL",
+    "appcode": "AppCode",
+    "help_appcode": "プラグイン使用文書に従ってAppCodeをペーストしてください",
+    "checkbox_group": {
+      "checkall": "すべて選択",
+      "capital": "登録資本",
+      "legalPerson": "法定代表者",
+      "errorTips": "エラーヒント",
+      "fetchTime": "データ取得時間",
+      "companyCode": "登録番号",
+      "creditNo": "統一社会信用コード",
+      "businessScope": "営業範囲",
+      "establishDate": "登録日",
+      "companyAddress": "企業住所",
+      "industry": "業界",
+      "orgCode": "組織機関コード",
+      "companyStatus": "経営状態",
+      "companyType": "企業タイプ",
+      "issueDate": "承認日",
+      "operationStartdate": "営業開始日",
+      "operationEnddate": "営業終了日",
+      "companyName": "企業名",
+      "authority": "登記機関"
+    },
+    "service_type": "APIサービスプロバイダー"
+  },
+  "placeholder": {
+    "field": "企業名があるフィールドを選択してください",
+    "apiurl": "通常の状況では変更の必要はありません",
+    "appcode": "AppCodeをここにペーストしてください"
+  },
+  "messages": {
+    "error": {
+      "fetch_error": "リクエスト失敗、ネットワーク問題かどうかを確認してください",
+      "set_error": "出力時にエラーが発生しました",
+      "has_error": "エラーが発生しました、現在はスキップしています"
+    },
+    "success": {
+      "finished": "操作が完了しました、base をチェックしてください"
+    }
+  }
 }
