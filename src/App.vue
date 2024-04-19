@@ -1,15 +1,12 @@
-<script setup lang="ts">
+<script setup lang="js">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { IField, IFieldMeta } from '@lark-base-open/js-sdk'
 import { FieldType, bitable } from '@lark-base-open/js-sdk'
-import type { CheckboxGroupProps, CheckboxProps } from 'tdesign-vue-next'
 import { MessagePlugin } from 'tdesign-vue-next'
-import type { AxiosResponse } from 'axios'
 import axios from 'axios'
 
 const { t } = useI18n()
-const mainFieldOptions = ref<IFieldMeta[]>([])
+const mainFieldOptions = ref([])
 
 const formData = reactive({
   fieldId: '',
@@ -35,9 +32,9 @@ const formData = reactive({
     'fetchTime',
   ],
 })
-const form = ref<any>(null)
+const form = ref(null)
 
-const checkboxOptions: CheckboxGroupProps['options'] = [
+const checkboxOptions = [
   { value: 'companyName', label: () => t('labels.checkbox_group.companyName') },
   { value: 'creditNo', label: () => t('labels.checkbox_group.creditNo') },
   { value: 'companyCode', label: () => t('labels.checkbox_group.companyCode') },
@@ -58,18 +55,18 @@ const checkboxOptions: CheckboxGroupProps['options'] = [
   { value: 'fetchTime', label: () => t('labels.checkbox_group.fetchTime') },
 ]
 
-const isLoading = ref<boolean>(false)
-const isForcedEnd = ref<boolean>(false)
-const mappedFieldIds = ref<{ [key: string]: string }>({})
-const checkAll = computed<boolean>(() => checkboxOptions.length === formData.checkbox.length)
-const indeterminate = computed<boolean>(() => !!(checkboxOptions.length > formData.checkbox.length && formData.checkbox.length))
-const isDisabled = computed<boolean>(() => !(formData.fieldId !== '' && formData.appCode !== '' && formData.checkbox.length > 0))
+const isLoading = ref(false)
+const isForcedEnd = ref(false)
+const mappedFieldIds = ref({})
+const checkAll = computed(() => checkboxOptions.length === formData.checkbox.length)
+const indeterminate = computed(() => !!(checkboxOptions.length > formData.checkbox.length && formData.checkbox.length))
+const isDisabled = computed(() => !(formData.fieldId !== '' && formData.appCode !== '' && formData.checkbox.length > 0))
 
-const handleSelectAll: CheckboxProps['onChange'] = (checked) => {
+function handleSelectAll(checked) {
   formData.checkbox = checked ? checkboxOptions.map(option => option.value) : []
 }
 
-async function setFieldList(): Promise<void> {
+async function setFieldList() {
   const selection = await bitable.base.getSelection()
   const table = await bitable.base.getTableById(selection.tableId)
   const view = await table.getViewById(selection.viewId)
@@ -189,7 +186,7 @@ async function onSubmit() {
     content: t('messages.success.finished'),
   })
 }
-async function getCellValueByRFIDS(recordId: string, field: IField) {
+async function getCellValueByRFIDS(recordId, field) {
   const cellValue = await field.getValue(recordId)
   if (typeof cellValue == 'object')
     return cellValue[0].text
@@ -197,7 +194,7 @@ async function getCellValueByRFIDS(recordId: string, field: IField) {
   return cellValue
 }
 
-async function handleError(errorMsg: string, recordId: string, errorDetail: string): Promise<void> {
+async function handleError(errorMsg, recordId, errorDetail) {
   const table = await bitable.base.getActiveTable()
   await table.setCellValue(mappedFieldIds.value.errorTips, recordId, [{ type: 'text', text: `${errorMsg} ${errorDetail}` }])
   MessagePlugin.error({
@@ -205,7 +202,7 @@ async function handleError(errorMsg: string, recordId: string, errorDetail: stri
   })
 }
 
-async function getServiceApi(keyword: string, appCode: string, serviceType: string): Promise<AxiosResponse> {
+async function getServiceApi(keyword, appCode, serviceType) {
   let api
   if (serviceType === 'shulian')
     api = 'https://slycompany.market.alicloudapi.com/business2/get'
