@@ -4,9 +4,11 @@ import { useI18n } from 'vue-i18n'
 import { FieldType, bitable } from '@lark-base-open/js-sdk'
 import { MessagePlugin } from 'tdesign-vue-next'
 import axios from 'axios'
+import { useTheme } from './hooks/useTheme'
 
 const { t } = useI18n()
 const mainFieldOptions = ref([])
+useTheme()
 
 const formData = reactive({
   fieldId: '',
