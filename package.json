@@ -2,6 +2,7 @@
   "name": "feishu-company-info",
   "type": "module",
   "version": "0.1.0",
+  "output": "dist",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

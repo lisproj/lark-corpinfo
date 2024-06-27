@@ -5,7 +5,7 @@ node_modules
 
 es/
 lib/
-dist/
+# dist/
 typings/
 
 _site
