@@ -235,14 +235,12 @@ onMounted(async () => {
     <t-space direction="vertical" size="small">
       <t-alert>
         <template #message>
-          {{ $t('text.alert_message') }}
-          <br>
           <t-link theme="primary" href="https://cladonia.feishu.cn/docx/SvKGddsnOoIdGZxbP3DcrSQpnfA#XhtEdE8uIovuDYxYsyEcLyuBnle" target="_blank">
             {{ $t('text.alert_link') }}
           </t-link>
         </template>
       </t-alert>
-      <t-form-item :label="$t('labels.field')" name="fieldId">
+      <t-form-item :label="$t('labels.field')" name="fieldId" :help="$t('labels.help_select')">
         <t-select v-model="formData.fieldId" :placeholder="$t('placeholder.field')">
           <t-option v-for="meta in mainFieldOptions" :key="meta.id" :value="meta.id" :label="meta.name" />
         </t-select>

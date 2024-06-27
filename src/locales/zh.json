@@ -1,16 +1,17 @@
 {
   "text": {
     "alert_message": "本插件可根据企业名称、注册号、统一社会信用代码等关键词获取相关企业的工商信息，支持阿里云市场接口",
-    "alert_link": "👉 插件使用说明文档",
+    "alert_link": "插件使用说明文档 👈",
     "submit": "批量查询",
     "type_shulian": "阿里云市场-数链",
     "type_shumai": "阿里云市场-数脉"
   },
   "labels": {
-    "field": "企业名称字段",
+    "field": "企业信息关键词字段",
     "apiurl": "接口请求地址",
     "appcode": "AppCode",
-    "help_appcode": "请按照插件使用文档获取AppCode以粘贴",
+    "help_appcode": "请按照插件使用文档获取 AppCode 以粘贴",
+    "help_select": "支持使用企业名称、注册号、统一社会信用代码作为关键词，以获取相关企业工商信息",
     "checkbox_group": {
       "checkall": "全选",
       "capital": "注册资本",
@@ -32,10 +33,10 @@
       "companyName": "企业名称",
       "authority": "登记机关"
     },
-    "service_type": "接口服务商"
+    "service_type": "信息源接口服务商"
   },
   "placeholder": {
-    "field": "请选择企业名称所在字段",
+    "field": "请选择企业信息关键词所在字段",
     "apiurl": "一般情况下不用变动",
     "appcode": "请粘贴AppCode至此"
   },

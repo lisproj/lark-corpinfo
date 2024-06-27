@@ -1,52 +1,53 @@
 {
   "text": {
-    "alert_message": "This extension allows you to obtain business registration information based on company name, registration number, or universal social credit code among other keywords, supporting Alibaba Cloud Market interface",
-    "alert_link": "👉 Extension Usage Documentation",
-    "submit": "Bulk Query",
-    "type_shulian": "Shulian",
-    "type_shumai": "Shumai"
+    "alert_message": "This extension allows you to obtain business registration information of companies based on keywords such as company name, registration number, or Unified Social Credit Code, supporting Aliyun Market API",
+    "alert_link": "Extension usage documentation 👈",
+    "submit": "Batch query",
+    "type_shulian": "Aliyun - Shulian",
+    "type_shumai": "Aliyun - Shumai"
   },
   "labels": {
-    "field": "Company Name Field",
-    "apiurl": "API Request URL",
+    "field": "Company information keyword field",
+    "apiurl": "API request URL",
     "appcode": "AppCode",
-    "help_appcode": "Please paste the AppCode as per the extension usage documentation",
+    "help_appcode": "Please obtain the AppCode according to the extension documentation and paste it here",
+    "help_select": "Support using company name, registration number, and Unified Social Credit Code as keywords to obtain related company business registration information",
     "checkbox_group": {
-      "checkall": "Select All",
-      "capital": "Registered Capital",
-      "legalPerson": "Legal Representative",
-      "errorTips": "Error Tips",
-      "fetchTime": "Data Retrieval Time",
-      "companyCode": "Registration Number",
+      "checkall": "Select all",
+      "capital": "Registered capital",
+      "legalPerson": "Legal representative",
+      "errorTips": "Error tips",
+      "fetchTime": "Data retrieval time",
+      "companyCode": "Registration number",
       "creditNo": "Unified Social Credit Code",
-      "businessScope": "Business Scope",
-      "establishDate": "Registration Date",
-      "companyAddress": "Company Address",
+      "businessScope": "Business scope",
+      "establishDate": "Registration date",
+      "companyAddress": "Company address",
       "industry": "Industry",
-      "orgCode": "Organization Code",
-      "companyStatus": "Operating Status",
-      "companyType": "Company Type",
-      "issueDate": "Approval Date",
-      "operationStartdate": "Operational Start Date",
-      "operationEnddate": "Operational End Date",
-      "companyName": "Company Name",
-      "authority": "Registration Authority"
+      "orgCode": "Organization code",
+      "companyStatus": "Operating status",
+      "companyType": "Company type",
+      "issueDate": "Approval date",
+      "operationStartdate": "Operation start date",
+      "operationEnddate": "Operation end date",
+      "companyName": "Company name",
+      "authority": "Registration authority"
     },
-    "service_type": "API Service Provider"
+    "service_type": "Information source API service provider"
   },
   "placeholder": {
-    "field": "Please select the field where the company name is located",
-    "apiurl": "No change needed under normal circumstances",
-    "appcode": "Please paste the AppCode here"
+    "field": "Please select the field where the company information keywords are located",
+    "apiurl": "Normally this does not need to be changed",
+    "appcode": "Please paste AppCode here"
   },
   "messages": {
     "error": {
       "fetch_error": "Request failed, please check if it's a network issue",
-      "set_error": "Error occurred during output",
-      "has_error": "An error was encountered, skip is currently in progress"
+      "set_error": "An error occurred during output",
+      "has_error": "Encountered an error, it has now been skipped"
     },
     "success": {
-      "finished": "Operation is complete, please check the base"
+      "finished": "Operation completed, please check the base"
     }
   }
 }

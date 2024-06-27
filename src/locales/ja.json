@@ -1,52 +1,53 @@
 {
   "text": {
-    "alert_message": "このプラグインを使用すると、企業名、登録番号、統一社会信用コードなどのキーワードに基づき、関連する企業の商業登録情報を取得でき、アリババクラウド市場インターフェースをサポートしています",
-    "alert_link": "👉 プラグイン使用説明書",
+    "alert_message": "このプラグインは、企業名、登記番号、統一社会信用コードなどのキーワードに基づいて関連する企業の事業登録情報を取得することができます。アリババクラウド市場 API をサポートしています",
+    "alert_link": "プラグインの使用説明書 👈",
     "submit": "一括照会",
-    "type_shulian": "数链",
-    "type_shumai": "数脈"
+    "type_shulian": "アリババクラウド市場 - 数連",
+    "type_shumai": "アリババクラウド市場 - 数脈"
   },
   "labels": {
-    "field": "企業名フィールド",
+    "field": "企業情報キーワードフィールド",
     "apiurl": "APIリクエストURL",
     "appcode": "AppCode",
-    "help_appcode": "プラグイン使用文書に従ってAppCodeをペーストしてください",
+    "help_appcode": "プラグインの使用説明書に従って AppCode を取得してここに貼り付けてください",
+    "help_select": "企業名、登記番号、統一社会信用コードをキーワードとして使用し、関連する企業の事業登録情報を取得できます",
     "checkbox_group": {
       "checkall": "すべて選択",
-      "capital": "登録資本",
+      "capital": "登録資本金",
       "legalPerson": "法定代表者",
       "errorTips": "エラーヒント",
       "fetchTime": "データ取得時間",
-      "companyCode": "登録番号",
+      "companyCode": "登記番号",
       "creditNo": "統一社会信用コード",
-      "businessScope": "営業範囲",
-      "establishDate": "登録日",
+      "businessScope": "業務範囲",
+      "establishDate": "登記日",
       "companyAddress": "企業住所",
       "industry": "業界",
-      "orgCode": "組織機関コード",
-      "companyStatus": "経営状態",
-      "companyType": "企業タイプ",
+      "orgCode": "組織コード",
+      "companyStatus": "運営状態",
+      "companyType": "企業形態",
       "issueDate": "承認日",
       "operationStartdate": "営業開始日",
       "operationEnddate": "営業終了日",
       "companyName": "企業名",
       "authority": "登記機関"
     },
-    "service_type": "APIサービスプロバイダー"
+    "service_type": "情報源APIサービスプロバイダー"
   },
   "placeholder": {
-    "field": "企業名があるフィールドを選択してください",
-    "apiurl": "通常の状況では変更の必要はありません",
-    "appcode": "AppCodeをここにペーストしてください"
+    "field": "企業情報キーワードがあるフィールドを選択してください",
+    "apiurl": "通常、これを変更する必要はありません",
+    "appcode": "ここにAppCodeを貼り付けてください"
   },
   "messages": {
     "error": {
-      "fetch_error": "リクエスト失敗、ネットワーク問題かどうかを確認してください",
+      "fetch_error": "リクエストに失敗しました。ネットワークの問題かどうか確認してください",
       "set_error": "出力時にエラーが発生しました",
-      "has_error": "エラーが発生しました、現在はスキップしています"
+      "has_error": "エラーが発生しましたが、現在はスキップされています"
     },
     "success": {
-      "finished": "操作が完了しました、base をチェックしてください"
+      "finished": "操作が完了しました。baseを確認してください"
     }
   }
 }
