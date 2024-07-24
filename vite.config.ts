@@ -1,24 +1,27 @@
+import path from 'node:path'
+import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import AutoImport from 'unplugin-auto-import/vite'
-import Components from 'unplugin-vue-components/vite'
-import { TDesignResolver } from 'unplugin-vue-components/resolvers'
+import { vitePluginForArco } from '@arco-plugins/vite-vue'
 
-export default {
+export default defineConfig({
   base: './',
   plugins: [
     vue(),
-    AutoImport({
-      resolvers: [TDesignResolver({
-        library: 'vue-next',
-      })],
-    }),
-    Components({
-      resolvers: [TDesignResolver({
-        library: 'vue-next',
-      })],
+    vitePluginForArco({
+      style: 'css',
+      theme: '@arco-themes/vue-lark-base-plugin',
     }),
   ],
   server: {
     host: '0.0.0.0',
   },
-}
+  build: {
+    target: 'esnext',
+    emptyOutDir: true, // build前清空outdir
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+})

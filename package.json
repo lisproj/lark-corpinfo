@@ -14,18 +14,20 @@
   "dependencies": {
     "@lark-base-open/js-sdk": "^0.4.0",
     "axios": "^1.7.2",
-    "tdesign-vue-next": "^1.9.7",
-    "vue": "~3.4.32",
+    "vue": "~3.4.34",
     "vue-i18n": "^9.13.1"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.23.0",
-    "@vitejs/plugin-vue": "^5.0.5",
+    "@antfu/eslint-config": "^2.23.2",
+    "@arco-design/web-vue": "^2.55.3",
+    "@arco-plugins/vite-vue": "^1.4.5",
+    "@arco-themes/vue-lark-base-plugin": "^0.0.7",
+    "@types/node": "^20.14.12",
+    "@vitejs/plugin-vue": "^5.1.0",
     "eslint": "^9.7.0",
-    "typescript": "~5.5.3",
-    "unplugin-auto-import": "^0.18.0",
-    "unplugin-vue-components": "^0.27.3",
+    "typescript": "~5.5.4",
     "vite": "^5.3.4",
-    "vue-tsc": "^2.0.26"
+    "vite-plugin-vue-devtools": "^7.3.7",
+    "vue-tsc": "^2.0.28"
   }
 }
