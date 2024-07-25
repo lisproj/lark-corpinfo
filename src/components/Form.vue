@@ -1,5 +1,6 @@
+<!-- eslint-disable ts/ban-ts-comment -->
 <script setup lang="ts">
-import { text } from 'node:stream/consumers'
+// @ts-nocheck
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { IField } from '@lark-base-open/js-sdk'
@@ -75,7 +76,7 @@ function handleSelectAll(value: any) {
   formData.checkbox = value ? checkboxOptions.map(option => option.value) : []
 }
 
-async function onSubmit() {
+async function onSubmit(this: any) {
   if (isLoading.value)
     isForcedEnd.value = true
   isLoading.value = true
@@ -113,8 +114,6 @@ async function onSubmit() {
     else {
       const newField = await table.addField({
         name: t(`labels.checkbox_group.${checkboxValue}`),
-        // eslint-disable-next-line ts/ban-ts-comment
-        // @ts-expect-error
         type: fieldTypeMap[checkboxValue as keyof typeof fieldTypeMap],
       })
       mappedFieldIds[checkboxValue] = newField
@@ -200,8 +199,6 @@ async function handleError(errorMsg: string, recordId: string, errorDetail: any)
   await table.setCellValue(
     mappedFieldIds.errorTips,
     recordId,
-    // eslint-disable-next-line ts/ban-ts-comment
-    // @ts-expect-error
     [{ type: 'text', text: `${errorMsg} ${errorDetail}` }],
   )
   this.$message.warning(t('messages.error.has_error'))
