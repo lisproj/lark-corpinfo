@@ -1,13 +1,40 @@
+<!-- eslint-disable no-console -->
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import type { IFieldMeta } from '@lark-base-open/js-sdk'
-import { FieldType, bitable } from '@lark-base-open/js-sdk'
+import type { IFieldMeta, ITextField } from '@lark-base-open/js-sdk'
+import { FieldType, ToastType, bitable } from '@lark-base-open/js-sdk'
+import axios from 'axios'
 import InfoTip from '@/components/utils/InfoTip.vue'
+import { allDisabled } from '@/hooks/useDisabled'
 
 const { t } = useI18n()
 
-const formData = reactive({
+interface FormData {
+  serviceType: string
+  appCode: string
+  checkbox: string[]
+  processMode: {
+    autoProcess: boolean
+    onlyProcessSelected: boolean
+  }
+  fieldId: {
+    keyword: string
+    companyName: string
+    companyCode: string
+    legalPerson: string
+    creditNo: string
+  }
+}
+
+interface CompanyResp {
+  companyCode: string
+  companyName: string
+  legalPerson: string
+  creditNo: string
+}
+
+const formData = reactive<FormData>({
   serviceType: 'shumai',
   appCode: '',
   checkbox: [
@@ -20,29 +47,25 @@ const formData = reactive({
   fieldId: {
     keyword: '',
     companyName: '',
-    creditNo: '',
     companyCode: '',
+    creditNo: '',
     legalPerson: '',
-    companyStatus: '',
-    establishDate: '',
   },
 })
 const textFieldOptions = ref<IFieldMeta[]>([])
 const textNumberFieldOptions = ref<IFieldMeta[]>([])
-const dateFieldOptions = ref<IFieldMeta[]>([])
+const rcdId = ref()
+const resp = ref()
 
 const checkboxOptions = [
   { value: 'companyName', label: 'labels.checkbox_group.companyName' },
   { value: 'creditNo', label: 'labels.checkbox_group.creditNo' },
   { value: 'companyCode', label: 'labels.checkbox_group.companyCode' },
   { value: 'legalPerson', label: 'labels.checkbox_group.legalPerson' },
-  { value: 'companyStatus', label: 'labels.checkbox_group.companyStatus' },
-  { value: 'establishDate', label: 'labels.checkbox_group.establishDate' },
 ]
 const checkAll = computed(() => checkboxOptions.length === formData.checkbox.length)
 const indeterminate = computed(() => !!(checkboxOptions.length > formData.checkbox.length && formData.checkbox.length))
 
-const isLoading = ref(false)
 const visibleSelectDrawer = ref(false)
 const drawerName = ref('')
 const drawerTableColumns = [
@@ -59,7 +82,7 @@ const drawerTableColumns = [
     dataIndex: 'creditNo',
   },
 ]
-const drawerTableData = reactive([])
+const drawerTableData = ref<CompanyResp[]>([])
 const drawerTableScroll = {
   x: 465,
   y: '100%',
@@ -74,12 +97,191 @@ async function setFieldList(): Promise<void> {
   const view = await table.getActiveView()
   const fieldMetaList: IFieldMeta[] = await view.getFieldMetaList()
   textFieldOptions.value = fieldMetaList.filter(item => item.type === FieldType.Text)
-  textNumberFieldOptions.value = fieldMetaList.filter(item => item.type === FieldType.Text || item.type === FieldType.Number)
   textNumberFieldOptions.value = fieldMetaList.filter(item => item.type === FieldType.DateTime)
 }
 
-function handleSelectAll(value: string) {
+function handleSelectAll(value: string): void {
   formData.checkbox = value ? checkboxOptions.map(option => option.value) : []
+}
+
+async function submit(): Promise<void> {
+  allDisabled.value = true
+
+  if (formData.appCode !== '') {
+    if (formData.checkbox.length > 0) {
+      if (formData.checkbox.some((checkboxValue: string | number | symbol) => {
+        const fieldIdValue = formData.fieldId[checkboxValue as keyof typeof formData.fieldId]
+        return checkboxOptions.some(option => option.value === checkboxValue && fieldIdValue === '')
+      })) {
+        allDisabled.value = false
+        await bitable.ui.showToast({
+          toastType: ToastType.warning,
+          message: '请选择输出字段以继续',
+        })
+      }
+      else {
+        if (formData.processMode.onlyProcessSelected === false) {
+          if (formData.fieldId.keyword === '') {
+            allDisabled.value = false
+            await bitable.ui.showToast({
+              toastType: ToastType.warning,
+              message: '请选择企业信息关键词字段以继续',
+            })
+          }
+          await processField()
+        }
+        else if (formData.processMode.onlyProcessSelected === true) {
+          await processSelected()
+        }
+      }
+    }
+    else {
+      allDisabled.value = false
+      await bitable.ui.showToast({
+        toastType: ToastType.warning,
+        message: '请选择输出项以继续',
+      })
+    }
+  }
+  else {
+    allDisabled.value = false
+    await bitable.ui.showToast({
+      toastType: ToastType.warning,
+      message: '请粘贴AppCode以继续',
+    })
+  }
+}
+
+async function processField(): Promise<void> {
+
+}
+
+async function processSelected(): Promise<void> {
+  const { fieldId, recordId } = await bitable.base.getSelection()
+  const table = await bitable.base.getActiveTable()
+  if (fieldId === null || recordId === null) {
+    allDisabled.value = false
+    await bitable.ui.showToast({
+      toastType: ToastType.error,
+      message: '请先在左侧多维表格中选中单元格',
+    })
+    return
+  }
+  const fieldMeta = await table.getFieldMetaById(fieldId)
+  if (fieldMeta.type !== FieldType.Text) {
+    allDisabled.value = false
+    await bitable.ui.showToast({
+      toastType: ToastType.error,
+      message: '请选中文本类型字段下的单元格',
+    })
+    return
+  }
+  const textField = await table.getField<ITextField>(fieldId)
+  const textFieldValue = await textField.getValue(recordId)
+  let response: CompanyResp[] = []
+  let objects
+  try {
+    response = await getServiceApi(textFieldValue[0].text)
+    objects = response.filter(item => typeof item === 'object')
+  }
+  catch (error) {
+    allDisabled.value = false
+    await bitable.ui.showToast({
+      toastType: ToastType.error,
+      message: t('messages.error.fetch_error') + error,
+    })
+    return
+  }
+  if (objects && response && objects.length >= 2) {
+    if (formData.processMode.autoProcess === false) {
+      console.log(objects)
+      console.log(response)
+      rcdId.value = recordId
+      resp.value = response
+      openSelectDrawer(textFieldValue[0].text, response)
+    }
+    else {
+      console.log(objects)
+      console.log(response)
+      await writeValue(recordId, response[0])
+    }
+  }
+  else if (response !== undefined) {
+    console.log(objects)
+    console.log(response)
+    await writeValue(recordId, response[0])
+  }
+  else {
+    console.log(objects)
+    console.log(response)
+    allDisabled.value = false
+    await bitable.ui.showToast({
+      toastType: ToastType.error,
+      message: t('messages.error.fetch_error'),
+    })
+  }
+}
+
+async function getServiceApi(keyword: string): Promise<[]> {
+  let api = ''
+  if (formData.serviceType === 'shulian')
+    api = 'https://slyqyxx.market.alicloudapi.com/business3/get'
+  else if (formData.serviceType === 'shumai')
+    api = 'https://businessfuzzy.shumaidata.com/getbusinessfuzzy'
+  else if (formData.serviceType === 'jmzs')
+    api = 'https://juccvvb.market.alicloudapi.com/enterprise/business/query'
+  let response
+  response = await axios.get(api, {
+    params: {
+      keyword,
+    },
+    headers: {
+      Authorization: `APPCODE ${formData.appCode}`,
+    },
+  })
+  if (formData.serviceType === 'shulian' || formData.serviceType === 'shumai')
+    response = response.data.data.data
+  else if (formData.serviceType === 'jmzs')
+    response = response.data.data.result
+  return response
+}
+
+function openSelectDrawer(name: string, response: CompanyResp[]) {
+  drawerName.value = name
+  drawerTableData.value = response
+  visibleSelectDrawer.value = true
+}
+
+function handleConfirmClick() {
+  visibleSelectDrawer.value = false
+  const selectedKeys = drawerTableSelectedKeys.value
+  const selectedCompany: CompanyResp = (resp.value as CompanyResp[]).find(company => company.companyName === selectedKeys[0])!
+  writeValue(rcdId.value, selectedCompany)
+}
+
+async function writeValue(value: string, company: CompanyResp) {
+  const table = await bitable.base.getActiveTable()
+  const fieldMap: Record<string, string> = {
+    companyName: formData.fieldId.companyName,
+    companyCode: formData.fieldId.companyCode,
+    legalPerson: formData.fieldId.legalPerson,
+    creditNo: formData.fieldId.creditNo,
+  }
+
+  for (const checkbox of formData.checkbox) {
+    if (Object.prototype.hasOwnProperty.call(fieldMap, checkbox)) {
+      const fieldId = fieldMap[checkbox]
+      const textField = await table.getField<ITextField>(fieldId)
+      await textField.setValue(value, company[checkbox as keyof CompanyResp])
+      break
+    }
+  }
+
+  allDisabled.value = false
+  await bitable.ui.showToast({
+    toastType: ToastType.success,
+    message: t('messages.success.finished'),
+  })
 }
 
 onMounted(async () => {
@@ -99,7 +301,8 @@ bitable.base.onSelectionChange((() => {
   <a-form
     v-model="formData"
     layout="vertical"
-    :disabled="isLoading"
+    :disabled="allDisabled"
+    @submit="submit"
   >
     <a-form-item
       field="serviceType"
@@ -208,11 +411,11 @@ bitable.base.onSelectionChange((() => {
       <a-form-item
         v-if="formData.checkbox.includes('companyName')"
         field="outputCompanyNameField"
-        label="补全输出企业名称字段"
+        label="输出企业名称字段"
       >
         <a-select
           v-model="formData.fieldId.companyName"
-          placeholder="请选择期望补全输出企业名称的字段"
+          placeholder="请选择期望输出企业名称的字段"
         >
           <a-option
             v-for="meta in textFieldOptions"
@@ -220,16 +423,23 @@ bitable.base.onSelectionChange((() => {
             :value="meta.id"
             :label="meta.name"
           />
+          <!-- <template #header>
+            <a-input-search
+              placeholder="输入名称创建新表"
+              button-text="创建"
+              search-button
+            />
+          </template> -->
         </a-select>
       </a-form-item>
       <a-form-item
         v-if="formData.checkbox.includes('creditNo')"
         field="outputCreditNoField"
-        label="补全输出统一社会信用代码字段"
+        label="输出统一社会信用代码字段"
       >
         <a-select
           v-model="formData.fieldId.creditNo"
-          placeholder="请选择期望补全输出统一社会信用代码的字段"
+          placeholder="请选择期望输出统一社会信用代码的字段"
         >
           <a-option
             v-for="meta in textFieldOptions"
@@ -242,14 +452,14 @@ bitable.base.onSelectionChange((() => {
       <a-form-item
         v-if="formData.checkbox.includes('companyCode')"
         field="outputCompanyCodeField"
-        label="补全输出注册号字段"
+        label="输出注册号字段"
       >
         <a-select
-          v-model="formData.fieldId.creditNo"
-          placeholder="请选择期望补全输出注册号的字段"
+          v-model="formData.fieldId.companyCode"
+          placeholder="请选择期望输出注册号的字段"
         >
           <a-option
-            v-for="meta in textNumberFieldOptions"
+            v-for="meta in textFieldOptions"
             :key="meta.id"
             :value="meta.id"
             :label="meta.name"
@@ -259,48 +469,14 @@ bitable.base.onSelectionChange((() => {
       <a-form-item
         v-if="formData.checkbox.includes('legalPerson')"
         field="outputLegalPersonField"
-        label="补全输出法定代表人字段"
+        label="输出法人字段"
       >
         <a-select
           v-model="formData.fieldId.legalPerson"
-          placeholder="请选择期望补全输出法定代表人的字段"
+          placeholder="请选择期望输出法人的字段"
         >
           <a-option
             v-for="meta in textFieldOptions"
-            :key="meta.id"
-            :value="meta.id"
-            :label="meta.name"
-          />
-        </a-select>
-      </a-form-item>
-      <a-form-item
-        v-if="formData.checkbox.includes('companyStatus')"
-        field="outputCompanyStatusField"
-        label="补全输出经营状态字段"
-      >
-        <a-select
-          v-model="formData.fieldId.legalPerson"
-          placeholder="请选择期望补全输出经营状态的字段"
-        >
-          <a-option
-            v-for="meta in textFieldOptions"
-            :key="meta.id"
-            :value="meta.id"
-            :label="meta.name"
-          />
-        </a-select>
-      </a-form-item>
-      <a-form-item
-        v-if="formData.checkbox.includes('establishDate')"
-        field="outputEstablishDateField"
-        label="补全输出登记日期字段"
-      >
-        <a-select
-          v-model="formData.fieldId.legalPerson"
-          placeholder="请选择期望补全输出登记日期的字段"
-        >
-          <a-option
-            v-for="meta in dateFieldOptions"
             :key="meta.id"
             :value="meta.id"
             :label="meta.name"
@@ -318,16 +494,16 @@ bitable.base.onSelectionChange((() => {
     </a-form-item>
   </a-form>
   <a-drawer
-    :width="315"
-    :footer="false"
+    width="full"
     :closable="false"
     :hide-cancel="true"
     :esc-to-close="false"
     :mask-closable="false"
     :visible="visibleSelectDrawer"
+    @ok="handleConfirmClick"
   >
     <template #title>
-      <a-typography-title :heading="6">
+      <a-typography-title :heading="7">
         需手动选择
       </a-typography-title>
     </template>
@@ -354,16 +530,7 @@ bitable.base.onSelectionChange((() => {
           :row-selection="drawertableRowSelection"
           :scroll="drawerTableScroll"
           :scrollbar="true"
-        >
-          <template #footer>
-            <a-space>
-              <a-button type="primary">
-                确认
-              </a-button>
-              <a-button>跳过，本次不处理</a-button>
-            </a-space>
-          </template>
-        </a-table>
+        />
       </a-space>
     </div>
   </a-drawer>

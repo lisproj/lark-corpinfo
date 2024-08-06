@@ -19,15 +19,15 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.23.2",
-    "@arco-design/web-vue": "^2.55.3",
+    "@arco-design/web-vue": "^2.56.0",
     "@arco-plugins/vite-vue": "^1.4.5",
-    "@arco-themes/vue-lark-base-plugin": "^0.0.7",
+    "@arco-themes/vue-lark-base-plugin": "^0.0.8",
     "@types/node": "^20.14.12",
-    "@vitejs/plugin-vue": "^5.1.0",
-    "eslint": "^9.7.0",
+    "@vitejs/plugin-vue": "^5.1.1",
+    "eslint": "^9.8.0",
     "typescript": "~5.5.4",
-    "vite": "^5.3.4",
+    "vite": "^5.3.5",
     "vite-plugin-vue-devtools": "^7.3.7",
-    "vue-tsc": "^2.0.28"
+    "vue-tsc": "^2.0.29"
   }
 }

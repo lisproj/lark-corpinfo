@@ -6,6 +6,7 @@ import { useI18n } from 'vue-i18n'
 import type { IField } from '@lark-base-open/js-sdk'
 import { FieldType, bitable } from '@lark-base-open/js-sdk'
 import axios from 'axios'
+import { allDisabled } from '@/hooks/useDisabled'
 
 const { t } = useI18n()
 
@@ -56,7 +57,6 @@ const checkboxOptions = [
   { value: 'fetchTime', label: 'labels.checkbox_group.fetchTime' },
 ]
 
-const isLoading = ref(false)
 const isForcedEnd = ref(false)
 const mappedFieldIds: Record<string, string> = {}
 const checkAll = computed(() => checkboxOptions.length === formData.checkbox.length)
@@ -77,9 +77,9 @@ function handleSelectAll(value: any) {
 }
 
 async function onSubmit(this: any) {
-  if (isLoading.value)
+  if (allDisabled.value)
     isForcedEnd.value = true
-  isLoading.value = true
+  allDisabled.value = true
 
   const { viewId } = await bitable.base.getSelection()
   const table = await bitable.base.getActiveTable()
@@ -181,7 +181,7 @@ async function onSubmit(this: any) {
     }
   }
 
-  isLoading.value = false
+  allDisabled.value = false
 
   this.$message.success(t('messages.success.finished'))
 }
@@ -234,6 +234,7 @@ onMounted(async () => {
   <a-form
     :model="formData"
     layout="vertical"
+    :disabled="allDisabled"
     @submit="onSubmit"
   >
     <a-form-item
