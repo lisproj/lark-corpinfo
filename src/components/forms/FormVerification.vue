@@ -1,6 +1,6 @@
 <!-- eslint-disable no-console -->
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { IFieldMeta, ITextField } from '@lark-base-open/js-sdk'
 import { FieldType, ToastType, bitable } from '@lark-base-open/js-sdk'
@@ -63,8 +63,6 @@ const checkboxOptions = [
   { value: 'companyCode', label: 'labels.checkbox_group.companyCode' },
   { value: 'legalPerson', label: 'labels.checkbox_group.legalPerson' },
 ]
-const checkAll = computed(() => checkboxOptions.length === formData.checkbox.length)
-const indeterminate = computed(() => !!(checkboxOptions.length > formData.checkbox.length && formData.checkbox.length))
 
 const visibleSelectDrawer = ref(false)
 const drawerName = ref('')
@@ -72,14 +70,6 @@ const drawerTableColumns = [
   {
     title: '名称',
     dataIndex: 'companyName',
-  },
-  {
-    title: '法人',
-    dataIndex: 'legalPerson',
-  },
-  {
-    title: '信用代码',
-    dataIndex: 'creditNo',
   },
 ]
 const drawerTableData = ref<CompanyResp[]>([])
@@ -98,10 +88,6 @@ async function setFieldList(): Promise<void> {
   const fieldMetaList: IFieldMeta[] = await view.getFieldMetaList()
   textFieldOptions.value = fieldMetaList.filter(item => item.type === FieldType.Text)
   textNumberFieldOptions.value = fieldMetaList.filter(item => item.type === FieldType.DateTime)
-}
-
-function handleSelectAll(value: string): void {
-  formData.checkbox = value ? checkboxOptions.map(option => option.value) : []
 }
 
 async function onSubmit(): Promise<void> {
@@ -296,21 +282,9 @@ function handleConfirmClick() {
 
 async function writeValue(value: string, company: CompanyResp, end?: boolean) {
   const table = await bitable.base.getActiveTable()
-  const fieldMap: Record<string, string> = {
-    companyName: formData.fieldId.companyName,
-    companyCode: formData.fieldId.companyCode,
-    legalPerson: formData.fieldId.legalPerson,
-    creditNo: formData.fieldId.creditNo,
-  }
 
-  for (const checkbox of formData.checkbox) {
-    if (Object.prototype.hasOwnProperty.call(fieldMap, checkbox)) {
-      const fieldId = fieldMap[checkbox]
-      const textField = await table.getField<ITextField>(fieldId)
-      await textField.setValue(value, company[checkbox as keyof CompanyResp])
-      break
-    }
-  }
+  const textField = await table.getField<ITextField>(formData.fieldId.companyName)
+  await textField.setValue(value, company.companyName)
 
   if (end) {
     allDisabled.value = false
@@ -414,92 +388,14 @@ bitable.base.onSelectionChange((() => {
         />
       </a-select>
     </a-form-item>
-    <a-form-item>
-      <a-space
-        direction="vertical"
-        fill
-      >
-        <a-checkbox
-          :model-value="checkAll"
-          :indeterminate="indeterminate"
-          @change="handleSelectAll"
-        >
-          {{ t('labels.checkbox_group.checkall') }}
-        </a-checkbox>
-        <a-checkbox-group v-model="formData.checkbox">
-          <a-grid :cols="2" :col-gap="0" :row-gap="8">
-            <a-grid-item
-              v-for="option in checkboxOptions"
-              :key="option.value"
-            >
-              <a-checkbox :value="option.value">
-                {{ t(option.label) }}
-              </a-checkbox>
-            </a-grid-item>
-          </a-grid>
-        </a-checkbox-group>
-      </a-space>
-    </a-form-item>
     <div>
       <a-form-item
-        v-if="formData.checkbox.includes('companyName')"
         field="outputCompanyNameField"
         label="输出企业名称字段"
       >
         <a-select
           v-model="formData.fieldId.companyName"
           placeholder="请选择期望输出企业名称的字段"
-        >
-          <a-option
-            v-for="meta in textFieldOptions"
-            :key="meta.id"
-            :value="meta.id"
-            :label="meta.name"
-          />
-        </a-select>
-      </a-form-item>
-      <a-form-item
-        v-if="formData.checkbox.includes('creditNo')"
-        field="outputCreditNoField"
-        label="输出统一社会信用代码字段"
-      >
-        <a-select
-          v-model="formData.fieldId.creditNo"
-          placeholder="请选择期望输出统一社会信用代码的字段"
-        >
-          <a-option
-            v-for="meta in textFieldOptions"
-            :key="meta.id"
-            :value="meta.id"
-            :label="meta.name"
-          />
-        </a-select>
-      </a-form-item>
-      <a-form-item
-        v-if="formData.checkbox.includes('companyCode')"
-        field="outputCompanyCodeField"
-        label="输出注册号字段"
-      >
-        <a-select
-          v-model="formData.fieldId.companyCode"
-          placeholder="请选择期望输出注册号的字段"
-        >
-          <a-option
-            v-for="meta in textFieldOptions"
-            :key="meta.id"
-            :value="meta.id"
-            :label="meta.name"
-          />
-        </a-select>
-      </a-form-item>
-      <a-form-item
-        v-if="formData.checkbox.includes('legalPerson')"
-        field="outputLegalPersonField"
-        label="输出法人字段"
-      >
-        <a-select
-          v-model="formData.fieldId.legalPerson"
-          placeholder="请选择期望输出法人的字段"
         >
           <a-option
             v-for="meta in textFieldOptions"
