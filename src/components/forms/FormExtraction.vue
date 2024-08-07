@@ -61,7 +61,7 @@ const isForcedEnd = ref(false)
 const mappedFieldIds: Record<string, string> = {}
 const checkAll = computed(() => checkboxOptions.length === formData.checkbox.length)
 const indeterminate = computed(() => !!(checkboxOptions.length > formData.checkbox.length && formData.checkbox.length))
-// const isDisabled = computed(() => !(formData.fieldId !== '' && formData.appCode !== '' && formData.checkbox.length > 0))
+const isDisabled = computed(() => !(formData.fieldId !== '' && formData.appCode !== '' && formData.checkbox.length > 0))
 
 async function setFieldList() {
   const selection = await bitable.base.getSelection()
@@ -310,6 +310,7 @@ onMounted(async () => {
       <a-button
         type="primary"
         html-type="submit"
+        :disabled="isDisabled"
       >
         {{ t('text.submit') }}
       </a-button>

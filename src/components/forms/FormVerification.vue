@@ -1,6 +1,6 @@
 <!-- eslint-disable no-console -->
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { IFieldMeta, ITextField } from '@lark-base-open/js-sdk'
 import { FieldType, ToastType, bitable } from '@lark-base-open/js-sdk'
@@ -63,6 +63,7 @@ const checkboxOptions = [
   { value: 'companyCode', label: 'labels.checkbox_group.companyCode' },
   { value: 'legalPerson', label: 'labels.checkbox_group.legalPerson' },
 ]
+const isDisabled = computed(() => !(formData.fieldId.keyword !== '' && formData.appCode !== '' && formData.fieldId.companyName !== ''))
 
 const visibleSelectDrawer = ref(false)
 const drawerName = ref('')
@@ -408,6 +409,7 @@ bitable.base.onSelectionChange((() => {
       <a-button
         type="primary"
         html-type="submit"
+        :disabled="isDisabled"
       >
         {{ t('text.submit') }}
       </a-button>
