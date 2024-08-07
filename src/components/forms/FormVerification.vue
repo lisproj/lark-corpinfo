@@ -267,8 +267,6 @@ async function getServiceApi(keyword: string): Promise<[]> {
     api = 'https://slyqyxx.market.alicloudapi.com/business3/get'
   else if (formData.serviceType === 'shumai')
     api = 'https://businessfuzzy.shumaidata.com/getbusinessfuzzy'
-  else if (formData.serviceType === 'jmzs')
-    api = 'https://juccvvb.market.alicloudapi.com/enterprise/business/query'
   let response
   response = await axios.get(api, {
     params: {
@@ -280,8 +278,6 @@ async function getServiceApi(keyword: string): Promise<[]> {
   })
   if (formData.serviceType === 'shulian' || formData.serviceType === 'shumai')
     response = response.data.data.data
-  else if (formData.serviceType === 'jmzs')
-    response = response.data.data.result
   return response
 }
 
@@ -358,9 +354,6 @@ bitable.base.onSelectionChange((() => {
         </a-radio>
         <a-radio value="shulian">
           {{ t('text.type_shulian') }}
-        </a-radio>
-        <a-radio value="jmzs">
-          阿里云聚美智树
         </a-radio>
       </a-radio-group>
     </a-form-item>
