@@ -104,7 +104,7 @@ function handleSelectAll(value: string): void {
   formData.checkbox = value ? checkboxOptions.map(option => option.value) : []
 }
 
-async function submit(): Promise<void> {
+async function onSubmit(): Promise<void> {
   allDisabled.value = true
 
   if (formData.appCode !== '') {
@@ -153,7 +153,54 @@ async function submit(): Promise<void> {
 }
 
 async function processField(): Promise<void> {
+  const table = await bitable.base.getActiveTable()
 
+  const recordList = await table.getRecordIdList()
+
+  for (const recordId of recordList) {
+    const textField = await table.getFieldById(formData.fieldId.keyword)
+
+    let textFieldValue
+    try {
+      const cellValue = await textField.getValue(recordId)
+      if (typeof cellValue == 'object')
+        textFieldValue = cellValue[0].text
+    }
+    catch {
+      continue
+    }
+
+    let response: CompanyResp[] = []
+    let objects
+    try {
+      response = await getServiceApi(textFieldValue)
+      objects = response.filter(item => typeof item === 'object')
+    }
+    catch (error) {
+      await bitable.ui.showToast({
+        toastType: ToastType.error,
+        message: t('messages.error.fetch_error') + error,
+      })
+      continue
+    }
+
+    if (response) {
+      if (objects && response && objects.length >= 2) {
+        if (formData.processMode.autoProcess === false) {
+          rcdId.value = recordId
+          resp.value = response
+          openSelectDrawer(textFieldValue, response)
+        }
+        else {
+          await writeValue(recordId, response[0])
+        }
+      }
+      else if (response !== undefined) {
+        await writeValue(recordId, response[0])
+      }
+    }
+  }
+  allDisabled.value = false
 }
 
 async function processSelected(): Promise<void> {
@@ -194,26 +241,18 @@ async function processSelected(): Promise<void> {
   }
   if (objects && response && objects.length >= 2) {
     if (formData.processMode.autoProcess === false) {
-      console.log(objects)
-      console.log(response)
       rcdId.value = recordId
       resp.value = response
       openSelectDrawer(textFieldValue[0].text, response)
     }
     else {
-      console.log(objects)
-      console.log(response)
       await writeValue(recordId, response[0])
     }
   }
   else if (response !== undefined) {
-    console.log(objects)
-    console.log(response)
     await writeValue(recordId, response[0])
   }
   else {
-    console.log(objects)
-    console.log(response)
     allDisabled.value = false
     await bitable.ui.showToast({
       toastType: ToastType.error,
@@ -256,10 +295,10 @@ function handleConfirmClick() {
   visibleSelectDrawer.value = false
   const selectedKeys = drawerTableSelectedKeys.value
   const selectedCompany: CompanyResp = (resp.value as CompanyResp[]).find(company => company.companyName === selectedKeys[0])!
-  writeValue(rcdId.value, selectedCompany)
+  writeValue(rcdId.value, selectedCompany, true)
 }
 
-async function writeValue(value: string, company: CompanyResp) {
+async function writeValue(value: string, company: CompanyResp, end?: boolean) {
   const table = await bitable.base.getActiveTable()
   const fieldMap: Record<string, string> = {
     companyName: formData.fieldId.companyName,
@@ -277,11 +316,13 @@ async function writeValue(value: string, company: CompanyResp) {
     }
   }
 
-  allDisabled.value = false
-  await bitable.ui.showToast({
-    toastType: ToastType.success,
-    message: t('messages.success.finished'),
-  })
+  if (end) {
+    allDisabled.value = false
+    await bitable.ui.showToast({
+      toastType: ToastType.success,
+      message: t('messages.success.finished'),
+    })
+  }
 }
 
 onMounted(async () => {
@@ -302,7 +343,7 @@ bitable.base.onSelectionChange((() => {
     v-model="formData"
     layout="vertical"
     :disabled="allDisabled"
-    @submit="submit"
+    @submit="onSubmit"
   >
     <a-form-item
       field="serviceType"
@@ -311,7 +352,6 @@ bitable.base.onSelectionChange((() => {
       <a-radio-group
         v-model="formData.serviceType"
         type="button"
-        size="small"
       >
         <a-radio value="shumai">
           {{ t('text.type_shumai') }}
@@ -423,13 +463,6 @@ bitable.base.onSelectionChange((() => {
             :value="meta.id"
             :label="meta.name"
           />
-          <!-- <template #header>
-            <a-input-search
-              placeholder="输入名称创建新表"
-              button-text="创建"
-              search-button
-            />
-          </template> -->
         </a-select>
       </a-form-item>
       <a-form-item
