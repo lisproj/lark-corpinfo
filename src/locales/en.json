@@ -4,7 +4,18 @@
     "alert_link": "Extension usage documentation 👈",
     "submit": "Batch query",
     "type_shulian": "Aliyun - Shulian",
-    "type_shumai": "Aliyun - Shumai"
+    "type_shumai": "Aliyun - Shumai",
+    "process_mode": {
+      "auto_select": "Auto Select",
+      "drawer_select": "Manual Select",
+      "process_field": "Process Entire Column",
+      "process_selected": "Process Selected Rows Only"
+    },
+    "drawer": {
+      "need_select": "Manual Selection Required",
+      "find_tips_front": "Multiple companies found matching the keyword '",
+      "find_tips_end": "'. Please select the most appropriate company to write into the multidimensional table."
+    }
   },
   "labels": {
     "field": "Company information keyword field",
@@ -33,18 +44,29 @@
       "companyName": "Company name",
       "authority": "Registration authority"
     },
-    "service_type": "Information source API service provider"
+    "service_type": "Information Source API Provider",
+    "process_mode": {
+      "group": "Processing Mode"
+    },
+    "output_company_name": "Output Company Name Field"
   },
   "placeholder": {
     "field": "Please select the field where the company information keywords are located",
     "apiurl": "Normally this does not need to be changed",
-    "appcode": "Please paste AppCode here"
+    "appcode": "Please paste AppCode here",
+    "output_company_name": "Please select the desired field for outputting the company name"
   },
   "messages": {
     "error": {
       "fetch_error": "Request failed, please check if it's a network issue",
       "set_error": "An error occurred during output",
-      "has_error": "Encountered an error, it has now been skipped"
+      "has_error": "An error occurred, the current process has been skipped",
+      "no_selected_output_field": "Please select an output field to continue",
+      "no_selected_input_field": "Please select a field containing company information keywords to continue",
+      "no_checked_output_option": "Please select an output option to continue",
+      "no_appcode": "Please paste the AppCode to continue",
+      "no_selection": "Please first select a cell in the Base table on the left",
+      "type_not_text": "Please select a cell under a text-type field"
     },
     "success": {
       "finished": "Operation completed, please check the base"

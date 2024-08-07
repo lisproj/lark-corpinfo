@@ -68,7 +68,7 @@ const visibleSelectDrawer = ref(false)
 const drawerName = ref('')
 const drawerTableColumns = [
   {
-    title: '名称',
+    title: t('labels.checkbox_group.companyName'),
     dataIndex: 'companyName',
   },
 ]
@@ -102,7 +102,7 @@ async function onSubmit(): Promise<void> {
         allDisabled.value = false
         await bitable.ui.showToast({
           toastType: ToastType.warning,
-          message: '请选择输出字段以继续',
+          message: t('messages.error.no_selected_output_field'),
         })
       }
       else {
@@ -111,7 +111,7 @@ async function onSubmit(): Promise<void> {
             allDisabled.value = false
             await bitable.ui.showToast({
               toastType: ToastType.warning,
-              message: '请选择企业信息关键词字段以继续',
+              message: t('messages.error.no_selected_input_field'),
             })
           }
           await processField()
@@ -125,7 +125,7 @@ async function onSubmit(): Promise<void> {
       allDisabled.value = false
       await bitable.ui.showToast({
         toastType: ToastType.warning,
-        message: '请选择输出项以继续',
+        message: t('messages.error.no_checked_output_option'),
       })
     }
   }
@@ -133,7 +133,7 @@ async function onSubmit(): Promise<void> {
     allDisabled.value = false
     await bitable.ui.showToast({
       toastType: ToastType.warning,
-      message: '请粘贴AppCode以继续',
+      message: t('messages.error.no_appcode'),
     })
   }
 }
@@ -196,7 +196,7 @@ async function processSelected(): Promise<void> {
     allDisabled.value = false
     await bitable.ui.showToast({
       toastType: ToastType.error,
-      message: '请先在左侧多维表格中选中单元格',
+      message: t('messages.error.no_selection'),
     })
     return
   }
@@ -205,7 +205,7 @@ async function processSelected(): Promise<void> {
     allDisabled.value = false
     await bitable.ui.showToast({
       toastType: ToastType.error,
-      message: '请选中文本类型字段下的单元格',
+      message: t('messages.error.type_not_text'),
     })
     return
   }
@@ -342,7 +342,7 @@ bitable.base.onSelectionChange((() => {
     </a-form-item>
     <a-form-item
       field="processMode"
-      label="处理模式"
+      :label="$t('labels.process_mode.group')"
     >
       <a-space direction="vertical">
         <a-radio-group
@@ -350,12 +350,10 @@ bitable.base.onSelectionChange((() => {
           type="button"
         >
           <a-radio :value="true">
-            自动选择
-            <InfoTip content="自动选择最匹配企业名称关键词的公司，适合关键词较精确或名称相似企业较少情况" />
+            {{ $t('text.process_mode.auto_select') }} <InfoTip content="自动选择最匹配企业名称关键词的公司，适合关键词较精确或名称相似企业较少情况" />
           </a-radio>
           <a-radio :value="false">
-            手动选择
-            <InfoTip content="遇到有两个以上符合关键词要求的公司则弹出对话框手动确认公司，适合关键词更模糊或名称相似企业较多情况" />
+            {{ $t('text.process_mode.drawer_select') }} <InfoTip content="遇到有两个以上符合关键词要求的公司则弹出对话框手动确认公司，适合关键词更模糊或名称相似企业较多情况" />
           </a-radio>
         </a-radio-group>
         <a-radio-group
@@ -363,10 +361,10 @@ bitable.base.onSelectionChange((() => {
           type="button"
         >
           <a-radio :value="false">
-            处理整列
+            {{ $t('text.process_mode.process_field') }}
           </a-radio>
           <a-radio :value="true">
-            仅处理选中行
+            {{ $t('text.process_mode.process_selected') }}
           </a-radio>
         </a-radio-group>
       </a-space>
@@ -391,11 +389,11 @@ bitable.base.onSelectionChange((() => {
     <div>
       <a-form-item
         field="outputCompanyNameField"
-        label="输出企业名称字段"
+        :label="$t('labels.output_company_name')"
       >
         <a-select
           v-model="formData.fieldId.companyName"
-          placeholder="请选择期望输出企业名称的字段"
+          :placeholder="$t('placeholder.output_company_name')"
         >
           <a-option
             v-for="meta in textFieldOptions"
@@ -426,7 +424,7 @@ bitable.base.onSelectionChange((() => {
   >
     <template #title>
       <a-typography-title :heading="7">
-        需手动选择
+        {{ $t('text.drawer.need_select') }}
       </a-typography-title>
     </template>
     <div>
@@ -435,11 +433,10 @@ bitable.base.onSelectionChange((() => {
         fill
       >
         <div>
-          找到符合关键词「
-          <a-typography-text bold>
+          {{ $t('text.drawer.find_tips_front') }} <a-typography-text bold>
             {{ drawerName }}
           </a-typography-text>
-          」的多个企业，请选择最匹配的企业以写入多维表格
+          {{ $t('text.drawer.find_tips_end') }}
         </div>
         <a-table
           v-model:selectedKeys="drawerTableSelectedKeys"

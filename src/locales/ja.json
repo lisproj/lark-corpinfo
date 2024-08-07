@@ -4,7 +4,18 @@
     "alert_link": "プラグインの使用説明書 👈",
     "submit": "一括照会",
     "type_shulian": "アリババクラウド市場 - 数連",
-    "type_shumai": "アリババクラウド市場 - 数脈"
+    "type_shumai": "アリババクラウド市場 - 数脈",
+    "process_mode": {
+      "auto_select": "自動選択",
+      "drawer_select": "手動選択",
+      "process_field": "列全体の処理",
+      "process_selected": "選択行のみ処理"
+    },
+    "drawer": {
+      "need_select": "手動選択が必要です",
+      "find_tips_front": "キーワード「",
+      "find_tips_end": "」に一致する複数の企業が見つかりました。最も適合する企業を選択して、多次元表に書き込んでください"
+    }
   },
   "labels": {
     "field": "企業情報キーワードフィールド",
@@ -33,18 +44,29 @@
       "companyName": "企業名",
       "authority": "登記機関"
     },
-    "service_type": "情報源APIサービスプロバイダー"
+    "service_type": "情報源APIサービスプロバイダー",
+    "process_mode": {
+      "group": "処理モード"
+    },
+    "output_company_name": "企業名フィールドの出力"
   },
   "placeholder": {
     "field": "企業情報キーワードがあるフィールドを選択してください",
     "apiurl": "通常、これを変更する必要はありません",
-    "appcode": "ここにAppCodeを貼り付けてください"
+    "appcode": "ここにAppCodeを貼り付けてください",
+    "output_company_name": "出力する企業名のフィールドを選択してください"
   },
   "messages": {
     "error": {
       "fetch_error": "リクエストに失敗しました。ネットワークの問題かどうか確認してください",
       "set_error": "出力時にエラーが発生しました",
-      "has_error": "エラーが発生しましたが、現在はスキップされています"
+      "has_error": "エラーが発生しました。現在の処理はスキップされました",
+      "no_selected_output_field": "続行するには出力フィールドを選択してください",
+      "no_selected_input_field": "続行するには企業情報のキーワードフィールドを選択してください",
+      "no_checked_output_option": "続行するには出力オプションを選択してください",
+      "no_appcode": "続行するにはAppCodeを貼り付けてください",
+      "no_selection": "左側のBase表でセルを先に選択してください",
+      "type_not_text": "テキストタイプのフィールドのセルを選択してください"
     },
     "success": {
       "finished": "操作が完了しました。baseを確認してください"
